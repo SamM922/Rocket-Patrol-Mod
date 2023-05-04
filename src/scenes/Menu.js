@@ -3,6 +3,15 @@ class Menu extends Phaser.Scene {
         super("menuScene");
     }
 
+    preload() {
+        // Loading audio
+        this.load.audio('bg_music', './assets/bgMusic.mp3'); //From Adhesive Wombat https://www.youtube.com/watch?v=0HxZn6CzOIo
+        this.load.audio('sfx_select', './assets/blip_select12.wav'); //From Nathan Altice https://github.com/nathanaltice/RocketPatrol
+        this.load.audio('sfx_explosion', './assets/explosion38.wav'); //From Nathan Altice https://github.com/nathanaltice/RocketPatrol
+        this.load.audio('sfx_rocket', './assets/rocket_shot.wav'); //From Nathan Altice https://github.com/nathanaltice/RocketPatrol
+    }
+
+
     create() {
         // Menu setup
         let menuConfig = {
@@ -30,28 +39,25 @@ class Menu extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     }
 
-    preload() {
-        // Loading audio
-        this.load.audio('sfx_select', './assets/blip_select12.wav');
-        this.load.audio('sfx_explosion', './assets/explosion38.wav');
-        this.load.audio('sfx_rocket', './assets/rocket_shot.wav');
-    }
-
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
             // Easy mode
             game.settings = {
                 spaceshipSpeed: 3,
-                gameTimer: 60000    
+                gameTimer: 60000,
+                gameSpeedUp: 30000,
+                faster: false
             }
             this.sound.play('sfx_select');
-            this.scene.start('playScene');    
+            this.scene.start('playScene');
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
             // Hard mode
             game.settings = {
                 spaceshipSpeed: 4,
-                gameTimer: 45000    
+                gameTimer: 45000,
+                gameSpeedUp: 22500,
+                faster: false
             }
             this.sound.play('sfx_select');
             this.scene.start('playScene');    

@@ -1,6 +1,7 @@
 class Play extends Phaser.Scene {
     constructor() {
         super("playScene");
+        this.highScore = 0;
     }
 
     preload() {
@@ -13,6 +14,9 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        // 5 point mod: Background music
+        const bgMusic = this.sound.add('bg_music');
+        bgMusic.play();
         // Add tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
         // Green top background
@@ -54,12 +58,27 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+        this.add.text(borderUISize + borderPadding + 110, borderUISize + borderPadding*2, "SCORE", scoreConfig);
+        this.fireText = this.add.text(borderUISize + borderPadding + 220, borderUISize + borderPadding*2, "FIRE", scoreConfig);
+        this.highScoreRight = this.add.text(borderUISize + borderPadding + 330, borderUISize + borderPadding*2, this.highScore, scoreConfig);
+        this.add.text(borderUISize + borderPadding + 440, borderUISize + borderPadding*2, "BEST", scoreConfig);
         this.gameOver = false;   // Ending control
         // 60-second timer
         scoreConfig.fixedWidth = 0;
+        // 5 point mod: Speed up halfway through
+        this.speedClock = this.time.delayedCall(game.settings.gameSpeedUp, () => {
+            game.settings.faster = true;
+            console.log("Things sped up! Did you notice?");
+        }, null, this);
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for the Menu', scoreConfig).setOrigin(0.5);
+            // 5 point mod: High Score
+            if (this.p1Score > this.highScore) {
+                this.highScore = this.p1Score;
+                this.add.text(game.config.width/2, game.config.height/2 + 128, 'New High Score!', scoreConfig).setOrigin(0.5)
+            }
+            bgMusic.stop()
             this.gameOver = true;
         }, null, this);
     }
@@ -80,6 +99,12 @@ class Play extends Phaser.Scene {
             this.ship01.update();   // Update ships
             this.ship02.update();
             this.ship03.update();
+        }
+        // 5 point mod: FIRE text from original game
+        if (this.p1Rocket.isFiring == true) {
+            this.fireText.visible = true;
+        } else {
+            this.fireText.visible = false;
         }
         // Check collisions
         if(this.checkCollision(this.p1Rocket, this.ship03)) {

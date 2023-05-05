@@ -8,6 +8,8 @@ Mod list: (I will also mention the mods at their main implementation point)
     Allow the player to control the Rocket after it's fired (5)
     Add your own background music to the Play scene (5)
     Implement the 'FIRE' UI text from the original game (5)
+    Create 4 new explosion sound effects and randomize which one plays on impact (10)
+    Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
 */
 let config = {
     type: Phaser.CANVAS,

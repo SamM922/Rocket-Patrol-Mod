@@ -8,9 +8,12 @@ class Menu extends Phaser.Scene {
         this.load.audio('bg_music', './assets/bgMusic.mp3'); //From Adhesive Wombat https://www.youtube.com/watch?v=0HxZn6CzOIo
         this.load.audio('sfx_select', './assets/blip_select12.wav'); //From Nathan Altice https://github.com/nathanaltice/RocketPatrol
         this.load.audio('sfx_explosion', './assets/explosion38.wav'); //From Nathan Altice https://github.com/nathanaltice/RocketPatrol
-        this.load.audio('sfx_rocket', './assets/rocket_shot.wav'); //From Nathan Altice https://github.com/nathanaltice/RocketPatrol
+        this.load.audio('sfx_rocket', './assets/rocket_shot.wav'); //From Nathan Altice https://github.com/nathanaltice/RocketPatrol\
+        this.load.audio('sfx_explosion2', './assets/explosion1.wav');
+        this.load.audio('sfx_explosion3', './assets/explosion2.wav');
+        this.load.audio('sfx_explosion4', './assets/explosion3.wav');
+        this.load.audio('sfx_explosion5', './assets/explosion4.wav');
     }
-
 
     create() {
         // Menu setup
@@ -44,6 +47,7 @@ class Menu extends Phaser.Scene {
             // Easy mode
             game.settings = {
                 spaceshipSpeed: 3,
+                saucerSpeed: 4,
                 gameTimer: 60000,
                 gameSpeedUp: 30000,
                 faster: false
@@ -55,6 +59,7 @@ class Menu extends Phaser.Scene {
             // Hard mode
             game.settings = {
                 spaceshipSpeed: 4,
+                saucerSpeed: 5,
                 gameTimer: 45000,
                 gameSpeedUp: 22500,
                 faster: false

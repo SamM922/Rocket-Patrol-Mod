@@ -10,12 +10,13 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
+        this.load.image('saucer', './assets/saucer.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
 
     create() {
         // 5 point mod: Background music
-        const bgMusic = this.sound.add('bg_music');
+        const bgMusic = this.sound.add('bg_music', {volume: 0.5});
         bgMusic.play();
         // Add tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
@@ -32,6 +33,7 @@ class Play extends Phaser.Scene {
         this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
         this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20).setOrigin(0,0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
+        this.saucer = new Saucer(this, game.config.width, borderUISize*3, 'saucer', 0, 50).setOrigin(0,0);
         // Controls
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -99,6 +101,7 @@ class Play extends Phaser.Scene {
             this.ship01.update();   // Update ships
             this.ship02.update();
             this.ship03.update();
+            this.saucer.update();
         }
         // 5 point mod: FIRE text from original game
         if (this.p1Rocket.isFiring == true) {
@@ -118,6 +121,10 @@ class Play extends Phaser.Scene {
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
+        }
+        if (this.checkCollision(this.p1Rocket, this.saucer)) {
+            this.p1Rocket.reset();
+            this.shipExplode(this.saucer);
         }
     }
 
@@ -139,7 +146,18 @@ class Play extends Phaser.Scene {
         // Add explosion
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');   //BOOM!
-        this.sound.play('sfx_explosion');
+        // 10 point mod: 4 new explosions randomized
+        if (Phaser.Math.Between(1, 3) == 1) {
+            this.sound.play('sfx_explosion');
+        } else if (Phaser.Math.Between(1, 3) == 1) {
+            this.sound.play('sfx_explosion2');
+        } else if (Phaser.Math.Between(1, 3) == 1) {
+            this.sound.play('sfx_explosion3');
+        } else if (Phaser.Math.Between(1, 3) == 1) {
+            this.sound.play('sfx_explosion4');
+        } else {
+            this.sound.play('sfx_explosion5')
+        }
         // Reset after animation
         boom.on('animationcomplete', () => {
             ship.reset();

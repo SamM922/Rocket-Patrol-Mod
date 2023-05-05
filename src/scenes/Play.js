@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
         this.load.image('saucer', './assets/saucer.png');
+        this.load.image('particle', './assets/particle.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
     }
 
@@ -126,6 +127,9 @@ class Play extends Phaser.Scene {
             this.p1Rocket.reset();
             this.shipExplode(this.saucer);
         }
+        if (this.checkDetonate(this.p1Rocket)) {
+            this.p1Rocket.reset();
+        }
     }
 
     checkCollision(rocket, ship) {
@@ -140,12 +144,25 @@ class Play extends Phaser.Scene {
         }
     }
 
+    checkDetonate(rocket) {
+        // Check here isn't working for JustDown, the isFiring check works
+        if (rocket.isFiring && Phaser.Input.Keyboard.JustDown(keyF)) {
+            console.log("checkDetonate Success");
+            return true;
+        } else {
+            console.log("checkDetonate Fail");
+            return false;
+        }
+    }
+
     shipExplode(ship) {
         // Hide
         ship.alpha = 0;
         // Add explosion
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');   //BOOM!
+        // 15 point mod: Particles on explosion
+        
         // 10 point mod: 4 new explosions randomized
         if (Phaser.Math.Between(1, 3) == 1) {
             this.sound.play('sfx_explosion');

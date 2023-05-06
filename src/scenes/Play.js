@@ -127,9 +127,6 @@ class Play extends Phaser.Scene {
             this.p1Rocket.reset();
             this.shipExplode(this.saucer);
         }
-        if (this.checkDetonate(this.p1Rocket)) {
-            this.p1Rocket.reset();
-        }
     }
 
     checkCollision(rocket, ship) {
@@ -140,17 +137,6 @@ class Play extends Phaser.Scene {
             rocket.height + rocket.y > ship. y) {
             return true;
         } else {
-            return false;
-        }
-    }
-
-    checkDetonate(rocket) {
-        // Check here isn't working for JustDown, the isFiring check works
-        if (rocket.isFiring && Phaser.Input.Keyboard.JustDown(keyF)) {
-            console.log("checkDetonate Success");
-            return true;
-        } else {
-            console.log("checkDetonate Fail");
             return false;
         }
     }

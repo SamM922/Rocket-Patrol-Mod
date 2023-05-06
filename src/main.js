@@ -10,6 +10,10 @@ Mod list: (I will also mention the mods at their main implementation point)
     Implement the 'FIRE' UI text from the original game (5)
     Create 4 new explosion sound effects and randomize which one plays on impact (10)
     Create a new enemy Spaceship type (w/ new artwork) that's smaller, moves faster, and is worth more points (15)
+    Use Phaser's particle emitter to create a particle explosion when the rocket hits the spaceship (15)
+    Custom modification: Approved for 10 points
+        If you hit the fire button while the rocket is already flying, it explodes
+        Additional feature: If a spaceship is hit while the rocket is exploding, you get 1.5x points.
 */
 let config = {
     type: Phaser.CANVAS,

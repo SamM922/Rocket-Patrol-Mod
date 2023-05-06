@@ -6,13 +6,14 @@ class Play extends Phaser.Scene {
 
     preload() {
         // Load image and bg sprites
-        // All sprites from Nathan Altice https://github.com/nathanaltice/RocketPatrol
+        // All sprites except particle.png used or edited from Nathan Altice https://github.com/nathanaltice/RocketPatrol
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
         this.load.image('saucer', './assets/saucer.png');
         this.load.image('particle', './assets/particle.png');
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+        this.load.spritesheet('explosion2', './assets/explosion2.png', {frameWidth: 16, frameHeight: 8, startFrame: 0, endFrame: 5});
     }
 
     create() {
@@ -45,6 +46,11 @@ class Play extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('explosion', { start: 0, end: 9, first: 0}),
             frameRate: 30
         });
+        this.anims.create({
+            key: 'explode2',
+            frames: this.anims.generateFrameNumbers('explosion2', { start: 0, end: 5, first: 0}),
+            frameRate: 30
+        });
         // The purpose of life
         this.p1Score = 0;
         // Display score
@@ -73,6 +79,7 @@ class Play extends Phaser.Scene {
             game.settings.faster = true;
             console.log("Things sped up! Did you notice?");
         }, null, this);
+        // Timer
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for the Menu', scoreConfig).setOrigin(0.5);
@@ -112,20 +119,23 @@ class Play extends Phaser.Scene {
         }
         // Check collisions
         if(this.checkCollision(this.p1Rocket, this.ship03)) {
-            this.p1Rocket.reset();
             this.shipExplode(this.ship03);
+            this.p1Rocket.reset();
         }
         if (this.checkCollision(this.p1Rocket, this.ship02)) {
-            this.p1Rocket.reset();
             this.shipExplode(this.ship02);
+            this.p1Rocket.reset();
         }
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
-            this.p1Rocket.reset();
             this.shipExplode(this.ship01);
+            this.p1Rocket.reset();
         }
         if (this.checkCollision(this.p1Rocket, this.saucer)) {
-            this.p1Rocket.reset();
             this.shipExplode(this.saucer);
+            this.p1Rocket.reset();
+        }
+        if (this.p1Rocket.isExplo == true) {
+            this.explode(this.p1Rocket);
         }
     }
 
@@ -148,7 +158,10 @@ class Play extends Phaser.Scene {
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');   //BOOM!
         // 15 point mod: Particles on explosion
-        
+        const emitter = this.add.particles(ship.x, ship.y, 'particle', {
+            speed: 150,
+            angle: { min: 0, max: 180 }
+        });
         // 10 point mod: 4 new explosions randomized
         if (Phaser.Math.Between(1, 3) == 1) {
             this.sound.play('sfx_explosion');
@@ -166,9 +179,27 @@ class Play extends Phaser.Scene {
             ship.reset();
             ship.alpha = 1;
             boom.destroy();
+            emitter.destroy();
         });
         // Add score and update text
-        this.p1Score += ship.points;
+        if (this.p1Rocket.isExplo == true) {
+            this.p1Score += ship.points * 1.5;
+            console.log("Bonus!");
+        } else {
+            this.p1Score += ship.points;
+        }
         this.scoreLeft.text = this.p1Score;
+    }
+
+    explode(rocket) {
+        rocket.alpha = 0;
+        rocket.y += rocket.moveSpeed;
+        let boom2 = this.add.sprite(rocket.x, rocket.y, 'explode2').setOrigin(0, 0);
+        boom2.anims.play('explode2');
+        boom2.on('animationcomplete', () => {
+            rocket.reset();
+            rocket.alpha = 1;
+            boom2.destroy();
+        });
     }
 }

@@ -7,18 +7,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
         this.moveSpeed = 3;   //Speed in pixels per frame
         this.sfxRocket = scene.sound.add('sfx_rocket');
         this.sfxExplo = scene.sound.add('sfx_explosion3');
-    }
-
-    preload() {
-        this.load.spritesheet('explosion2', './assets/explosion2.png', {frameWidth: 16, frameHeight: 8, startFrame: 0, endFrame: 5});
-    }
-
-    create() {
-        this.anims.create({
-            key: 'explode2',
-            frames: this.anims.generateFrameNumbers('explosion2', { start: 0, end: 5, first: 0}),
-            frameRate: 30
-        });
+        this.isExplo = false;
     }
 
     update () {
@@ -36,8 +25,8 @@ class Rocket extends Phaser.GameObjects.Sprite {
                 this.sfxRocket.play();
             } else {
                 // Custom mod: Explode rocket if fire button hit while flying
+                this.isExplo = true;
                 this.sfxExplo.play();
-                this.explode();
             }
         }
         //If fired, move up
@@ -53,15 +42,7 @@ class Rocket extends Phaser.GameObjects.Sprite {
     // Reset to bottom
     reset() {
         this.isFiring = false;
+        this.isExplo = false;
         this.y = game.config.height - borderUISize - borderPadding;
-    }
-
-    explode() {
-        let boom2 = this.add.sprite(this.x, this.y, 'explosion2').setOrigin(0, 0);
-        boom2.anims.play('explode2');
-        boom2.on('animationcomplete', () => {
-            this.reset();
-            boom2.destroy();
-        });
     }
 }
